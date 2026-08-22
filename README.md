@@ -1,6 +1,6 @@
 # Family Tree Builder
 
-**[Live demo](https://family-tree-builder.streamlit.app)** · [Proofs](proofs.pdf) · [Notebook](project_bfs_logic.ipynb)
+**[Live demo](https://family-tree-builder-abdullah-ismail.streamlit.app/)** · [Proofs](proofs.pdf) · [Notebook](project_bfs_logic.ipynb)
 
 Build a family tree in your browser, then ask how any two people are related.
 
