@@ -108,7 +108,7 @@ def validate_parent_link(parent_id, child_id, tree):
     if child_id in bfs(tree, parent_id, 'parents'):
         return f"That would make {c_name} their own ancestor."
     if child_id in tree[parent_id]["spouse"]:
-        return f"{p_name} and {c_name} are spouses — they can't be parent and child."
+        return f"{p_name} and {c_name} are married, so they can't be parent and child."
     return None
 
 def compute_generation(person_id, tree):
@@ -198,53 +198,53 @@ if "tree" not in st.session_state:
 
 st.title("Family Tree Builder")
 
-with st.expander("How to use this — read me first", expanded=True):
+with st.expander("How to use this. Read me first.", expanded=True):
     st.markdown(
         """
 ### Scroll down to see your tree
 
-The tree is drawn **below these instructions**. You need to scroll down to see
-all of it — collapse this box with the arrow above once you have read it.
+Your tree is drawn below these instructions. Scroll down to see all of it. You
+can close this box using the arrow above once you have read it.
 
 ---
 
-The tabs are numbered as a rough order to follow, but you can jump between
-them however you like — you only need at least two people before you can
-connect anyone. The tree on the right redraws every time you add something.
+The tabs are numbered in a rough order to follow, but you can move between them
+however you like. You just need at least two people before you can connect
+anyone. The tree on the right redraws every time you add something.
 
-**1. Add people** — Type a name, click the button. Repeat for everyone.
+**1. Add people.** Type a name and click the button. Repeat for everyone.
 
-**2. Parents** — Pick the child, then their parents. Everyone can have up to
-two parents. Adding parents together does NOT automatically make them spouses —
-you have to make that link in the **Married couples** tab.
+**2. Parents.** Pick the child, then their parents. Everyone can have up to two
+parents. Adding two parents together does NOT mark them as married. To do that,
+use the Married couples tab.
 
-**3. Married couples** — Pick two people to mark them as married. Each person
-can have one spouse only.
+**3. Married couples.** Pick two people to mark them as married. Each person can
+have one spouse only.
 
-**4. How are they related?** — Choose two people and click *Show the
-connection*. You get the chain of people linking them, how many steps apart
-they are, and that same chain drawn in red on the tree.
+**4. How are they related?** Choose two people and click *Show the connection*.
+You get the chain of people linking them, how many steps apart they are, and
+that same chain drawn in red on the tree.
 
-**5. Fix a mistake** — Remove a person, or clear everyone and start over.
+**5. Fix a mistake.** Remove one person, or clear everyone and start over.
 
-On the tree, **grey lines connect parents to children** and **dashed pink lines
-connect married couples**.
+On the tree, grey lines connect parents to children. Dashed pink lines connect
+married couples.
 
-Each person gets a number, like *Mom (id 3)*. That is how you tell two people
-apart if they have the same name.
+Each person gets a number, like *Mom (id 3)*. Use it to tell two people apart
+when they have the same name.
 
-If something would not make sense — like someone being their own grandparent —
-the app says so instead of doing it. It catches the mistakes it can, but family
-trees get complicated, so it will not catch everything. If the tree looks wrong,
-remove the person and add them again.
+The app blocks things that make no sense, like someone being their own
+grandparent, and tells you why. It catches what it can, but family trees get
+complicated, so it will miss some cases. If the tree looks wrong, remove the
+person and add them again.
 
 ---
 
-**Before you start:** your tree is not saved. Refreshing the page or closing
-the tab clears it, so finish in one sitting or screenshot the result. If you
-see a loading screen when you first open the page, the app was asleep — give
-it about thirty seconds. Use a laptop or desktop; on a phone the tree is
-squeezed into a narrow strip.
+**Before you start.** Your tree is not saved. Refreshing the page or closing the
+tab clears it, so finish in one sitting or take a screenshot. If you see a
+loading screen when you first open the page, the app was asleep. Give it about
+thirty seconds. Use a laptop or desktop. On a phone the tree gets squeezed into
+a narrow strip.
         """
     )
 
@@ -275,7 +275,7 @@ with left:
         st.markdown(
             "**Pick the child first**, then their parents. If you know both, add "
             "them together in this one step. If you only know one, leave "
-            "*Parent 2* set to **— none —**."
+            "*Parent 2* set to none."
         )
         if len(tree) < 2:
             st.info("Add at least 2 people in tab 1 first.")
@@ -311,7 +311,7 @@ with left:
                 ):
                     error = (
                         f"{get_name(parent_one)} and {get_name(parent_two)} can't both be "
-                        f"{get_name(child_id)}'s parents — one is already the other's ancestor."
+                        f"{get_name(child_id)}'s parents, because one is already the other's ancestor."
                     )
                 else:
                     # Validate every chosen parent link before adding any of them.
@@ -348,12 +348,12 @@ with left:
                 elif tree[spouse_two]["spouse"]:
                     st.error(f"{get_name(spouse_two)} already has a spouse.")
                 elif spouse_two in tree[spouse_one]["children"] or spouse_two in tree[spouse_one]["parents"]:
-                    st.error(f"{get_name(spouse_one)} and {get_name(spouse_two)} are in a parent-child relationship — they can't be spouses.")
+                    st.error(f"{get_name(spouse_one)} and {get_name(spouse_two)} are parent and child, so they can't be married.")
                 elif (
                     spouse_two in bfs(tree, spouse_one, 'parents')
                     or spouse_one in bfs(tree, spouse_two, 'parents')
                 ):
-                    st.error(f"{get_name(spouse_one)} and {get_name(spouse_two)} are ancestor and descendant — they can't be spouses.")
+                    st.error(f"{get_name(spouse_one)} and {get_name(spouse_two)} are ancestor and descendant, so they can't be married.")
                 else:
                     add_spouse(spouse_one, spouse_two, tree)
                     st.success(f"Added: {get_name(spouse_one)} ⇔ {get_name(spouse_two)}")
@@ -370,7 +370,7 @@ with left:
                 path_submit = st.form_submit_button("Show the connection")
             if path_submit:
                 if start_id == end_id:
-                    st.info("That is the same person twice — pick two different people.")
+                    st.info("That is the same person twice. Pick two different people.")
                     st.session_state.highlight_path = None
                 else:
                     neighbor_dict = bfs(tree, start_id, 'all')
